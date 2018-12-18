@@ -1,34 +1,67 @@
 import transform from './transform'
 
-export default function parse(pattern, data, callback) {
-  while (true) {
-    const match = data.match(new RegExp(pattern+'\{([^\}]+)\}'))
+export default async function parse(type, input, compile) {
+  const matches = matchAll(input, new RegExp(type+'\\(', 'g'))
 
-    if (!match) {
-      break
-    }
+  let output = input
 
-    if (data[match.index-1] === '\\') {
-      data = replaceAt(data, match.index-1, '')
-      continue
-    }
+  for (const match of matches) {
+    const startAt = match.index
+    const [part, endAt] = getPart(startAt, input)
+    const compiled = await compile(normalize(type, part))
 
-    const [raw] = match
-    let output = callback(
-      transform(
-        raw.replace(/\n/g, '')
-          .replace(`${pattern}{`, '')
-          .replace('}', '')
-          .trim()
-      )
-    )
+    const head = input.substring(0, startAt)
+    const tail = input.substring(endAt, input.length)
 
-    data = data.replace(raw, output)
+    output = await transform(head + compiled + tail)
   }
 
-  return data
+  return output
 }
 
-function replaceAt(string, index, replace) {
-  return string.substring(0, index) + replace + string.substring(index + 1);
+function normalize(type, input) {
+  return input.replace(type+'(', '').slice(0, -1).trim()
+}
+
+function getPart(startAt, input) {
+  let found = false
+  let count = 0
+  let end = startAt
+  let part = ''
+  for (const char of input.substring(startAt, input.length)) {
+    if (char === '(') {
+      count++
+      found = true
+    }
+
+    if (char === ')') {
+      count--
+    }
+
+    part += char
+    end++
+
+    if (found && count === 0) {
+      break
+    }
+  }
+
+  return [part, end]
+}
+
+function ensureFlag(flags, flag) {
+    return flags.includes(flag) ? flags : flags + flag;
+}
+
+function matchAll(str, regex) {
+  const localCopy = new RegExp(regex, ensureFlag(regex.flags, 'g'))
+
+  let match
+  const matches = []
+
+  while (match = localCopy.exec(str)) {
+    matches.push(match)
+  }
+
+  return matches
 }

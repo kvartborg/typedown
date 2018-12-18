@@ -8,9 +8,9 @@ import parse from './parse'
  * @param {Object}  options transformation options
  * @return {String} output
  */
-export default function transform (data) {
+export default async function transform (data) {
   for (const transform of transforms) {
-    data = parse(transform.name, data, transform)
+    data = await parse(transform.name, data, transform)
   }
 
   return data

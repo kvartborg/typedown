@@ -1,12 +1,22 @@
 import fs from 'fs'
 import path from 'path'
+import style from './style'
+import transform from '../transform'
 
-export default function include (data) {
-  return '\n' + data.split(' ')
+export default async function include (data) {
+  const files = await Promise.all(data.split(' ')
     .filter(path => path !== '')
-    .map(p =>
-      fs.readFileSync(
+    .map(async p => {
+      const content = fs.readFileSync(
         path.resolve(process.cwd(), p.trim())
       ).toString()
-    ).join('\n')
+
+      if (p.includes('.css')) {
+        return await style(content)
+      }
+
+      return content
+    }))
+
+  return files.join('\n')
 }

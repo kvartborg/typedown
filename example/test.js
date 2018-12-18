@@ -4,18 +4,18 @@ const watch = require('node-watch')
 const { transform } = require('../lib')
 
 
-watch('./', { recursive: true }, (e, name) => {
+watch('./', { recursive: true, filter: /(\.md|\.css)$/ }, (e, name) => {
   if (name === 'output.md') {
     return
   }
 
   try {
-    fs.writeFileSync(
+    transform(
+      fs.readFileSync(path.resolve('./main.md')).toString()
+    ).then(data => fs.writeFileSync(
       path.resolve('./output.md'),
-      transform(
-        fs.readFileSync(path.resolve('./main.md')).toString()
-      )
-    )
+      data
+    )).catch(err => console.log(err))
   } catch(err) {
     console.log(err)
   }

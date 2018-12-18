@@ -41,10 +41,12 @@
     "node": ">=6"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "babel-jest": "^21.0.2",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.2",
     "jest": "^21.1.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.2"
@@ -56,6 +58,7 @@
   },
   "dependencies": {
     "mathjax": "^2.7.5",
+    "mathjax-node": "^2.1.1",
     "node-watch": "^0.5.8"
   }
 }

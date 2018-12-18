@@ -1,10 +1,11 @@
-# Main
+# testing
 
-include{
+<!--
+This is a comment
+-->
+include(
+  style.css
   sections/hello.md
   sections/world.md
-}
-
-link{
-  https://google.dk
-}
+  sections/test.md
+)
