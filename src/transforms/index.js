@@ -5,11 +5,11 @@ import center from './center'
 import math from './math'
 import style from './style'
 
-export default [
+export default {
   include,
   link,
   image,
   center,
   math,
-  style,
-]
+  style
+}

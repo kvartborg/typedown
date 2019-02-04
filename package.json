@@ -1,10 +1,10 @@
 {
-  "name": "markdown",
+  "name": "typedown",
   "description": "",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "test": "npm run lint && jest --coverage",
+    "test": "# npm run lint && jest --coverage",
     "test:watch": "jest --watch",
     "lint": "standard | snazzy; exit 0",
     "lint:fix": "standard --fix | snazzy; exit 0",
@@ -13,11 +13,15 @@
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "prepublish": "npm run build && npm test"
   },
-  "main": "lib/index.js",
-  "module": "src/index.js",
+  "main": "lib/typedown.js",
+  "module": "src/typedown.js",
+  "bin": {
+    "typedown": "./bin/cli.js",
+    "td": "./bin/cli.js"
+  },
   "files": [
+    "bin",
     "lib",
-    "dist",
     "src",
     "README.md",
     "LICENSE"
@@ -57,8 +61,16 @@
     ]
   },
   "dependencies": {
+    "d3": "^5.8.0",
+    "d3-node": "^2.1.0",
     "mathjax": "^2.7.5",
     "mathjax-node": "^2.1.1",
-    "node-watch": "^0.5.8"
+    "meow": "^5.0.0",
+    "node-watch": "^0.5.8",
+    "remark-html": "^9.0.0",
+    "remark-parse": "^6.0.3",
+    "remark-stringify": "^6.0.4",
+    "unified": "^7.1.0",
+    "unified-stream": "^1.0.4"
   }
 }

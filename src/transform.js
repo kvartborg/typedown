@@ -1,5 +1,4 @@
 import transforms from './transforms'
-import EventEmitter from 'events'
 import parse from './parse'
 
 /**
@@ -9,7 +8,7 @@ import parse from './parse'
  * @return {String} output
  */
 export default async function transform (data) {
-  for (const transform of transforms) {
+  for (const transform of Object.values(transforms)) {
     data = await parse(transform.name, data, transform)
   }
 

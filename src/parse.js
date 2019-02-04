@@ -1,65 +1,48 @@
 import transform from './transform'
+import transforms from './transforms'
+import vm from 'vm'
 
-export default async function parse(type, input, compile) {
-  const matches = matchAll(input, new RegExp(type+'\\(', 'g'))
+export default async function parse (type, input, compile) {
+  const matches = matchAll(input, new RegExp(`{{(.|\n)*?}}`, 'g'))
 
   let output = input
 
   for (const match of matches) {
-    const startAt = match.index
-    const [part, endAt] = getPart(startAt, input)
-    const compiled = await compile(normalize(type, part))
+    try {
+      const js = match[0].replace('{{', '').replace('}}', '')
+      const func = `
+        (async ctx => {
+          ${js.includes('return') ? js : 'return ' + js.trim()}
+        })()
+      `
 
-    const head = input.substring(0, startAt)
-    const tail = input.substring(endAt, input.length)
-
-    output = await transform(head + compiled + tail)
+      output = await transform(
+        output.replace(/\{\{(.|\n)*?\}\}/,
+        (await vm.runInNewContext(func, { ctx: {}, require, global, console, ...transforms })) || '')
+      )
+    } catch (err) {
+      console.log(err)
+      output = output.replace(
+        /\{\{(.|\n)*?\}\}/,
+        "<div style='color: red;'>" + err.message + '</div>'
+      )
+    }
   }
 
   return output
 }
 
-function normalize(type, input) {
-  return input.replace(type+'(', '').slice(0, -1).trim()
+function ensureFlag (flags, flag) {
+  return flags.includes(flag) ? flags : flags + flag
 }
 
-function getPart(startAt, input) {
-  let found = false
-  let count = 0
-  let end = startAt
-  let part = ''
-  for (const char of input.substring(startAt, input.length)) {
-    if (char === '(') {
-      count++
-      found = true
-    }
-
-    if (char === ')') {
-      count--
-    }
-
-    part += char
-    end++
-
-    if (found && count === 0) {
-      break
-    }
-  }
-
-  return [part, end]
-}
-
-function ensureFlag(flags, flag) {
-    return flags.includes(flag) ? flags : flags + flag;
-}
-
-function matchAll(str, regex) {
+function matchAll (str, regex) {
   const localCopy = new RegExp(regex, ensureFlag(regex.flags, 'g'))
 
   let match
   const matches = []
 
-  while (match = localCopy.exec(str)) {
+  while ((match = localCopy.exec(str))) {
     matches.push(match)
   }
 

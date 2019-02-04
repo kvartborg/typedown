@@ -1,5 +1,3 @@
-# markdown
+# Typedown
 
-```math
-E = mc^2
-```
+> This is an experiment!

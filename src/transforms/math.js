@@ -3,7 +3,7 @@ import { resolve } from 'path'
 import mj from 'mathjax-node'
 import crypto from 'crypto'
 
-function checksum(str, algorithm, encoding) {
+function checksum (str, algorithm, encoding) {
   return crypto
     .createHash(algorithm || 'md5')
     .update(str, 'utf8')
@@ -13,26 +13,27 @@ function checksum(str, algorithm, encoding) {
 const path = resolve(process.cwd(), 'math')
 
 if (!fs.existsSync(path)) {
-    fs.mkdirSync(path);
+  fs.mkdirSync(path)
 }
 
 mj.start()
 
 const config = {
-    format: 'TeX',
-    svg: true,
+  format: 'TeX',
+  svg: true
 }
 
 export default async function math (math) {
   return new Promise((resolve, reject) => {
     mj.typeset({ ...config, math }, result => {
-      if (result.error) return reject(error)
+      if (result.error) return reject(result.error)
       const filename = checksum(result.svg) + '.svg'
 
       if (!fs.existsSync(`${path}/${filename}`)) {
         fs.writeFileSync(`${path}/${filename}`, result.svg)
       }
 
+      // resolve(result.svg)
       resolve(`![${math}](${path}/${filename})`)
     })
   })
