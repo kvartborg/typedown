@@ -20,21 +20,21 @@ mj.start()
 
 const config = {
   format: 'TeX',
-  svg: true
+  svg: true,
+  displayMessages: true
 }
 
 export default async function math (math) {
   return new Promise((resolve, reject) => {
     mj.typeset({ ...config, math }, result => {
-      if (result.error) return reject(result.error)
+      if (result.error) throw new Error(result.error)
       const filename = checksum(result.svg) + '.svg'
 
       if (!fs.existsSync(`${path}/${filename}`)) {
         fs.writeFileSync(`${path}/${filename}`, result.svg)
       }
 
-      // resolve(result.svg)
-      resolve(`![${math}](${path}/${filename})`)
+      resolve(`![${math.replace(/\[/, '\\[').replace(/\]/, '\\]')}](${path}/${filename})`)
     })
   })
 }

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import style from './style'
+import image from './image'
 
 export default async function include (...paths) {
   const files = await Promise.all(
@@ -12,6 +13,10 @@ export default async function include (...paths) {
 
         if (p.includes('.css')) {
           return style(content)
+        }
+
+        if (/(.png|.jpg|.jpeg|.svg)/.test(p)) {
+          return image(p)
         }
 
         return content

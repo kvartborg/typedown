@@ -2,7 +2,7 @@ import transform from './transform'
 import transforms from './transforms'
 import vm from 'vm'
 
-export default async function parse (type, input, compile) {
+export default async function parse (input) {
   const matches = matchAll(input, new RegExp(`{{(.|\n)*?}}`, 'g'))
 
   let output = input
@@ -12,7 +12,7 @@ export default async function parse (type, input, compile) {
       const js = match[0].replace('{{', '').replace('}}', '')
       const func = `
         (async ctx => {
-          ${js.includes('return') ? js : 'return ' + js.trim()}
+          ${js.includes('return') && js.includes('\n') ? js : 'return ' + js.trim()}
         })()
       `
 
@@ -21,7 +21,6 @@ export default async function parse (type, input, compile) {
         (await vm.runInNewContext(func, { ctx: {}, require, global, console, ...transforms })) || '')
       )
     } catch (err) {
-      console.log(err)
       output = output.replace(
         /\{\{(.|\n)*?\}\}/,
         "<div style='color: red;'>" + err.message + '</div>'

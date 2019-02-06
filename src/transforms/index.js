@@ -4,6 +4,8 @@ import image from './image'
 import center from './center'
 import math from './math'
 import style from './style'
+import chart from './chart'
+import csv from './csv'
 
 export default {
   include,
@@ -11,5 +13,7 @@ export default {
   image,
   center,
   math,
-  style
+  style,
+  chart,
+  csv,
 }
