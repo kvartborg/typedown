@@ -15,12 +15,18 @@ export default (data = [], width = 760, height = 400) => {
 
   // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
-      .domain([0, data.reduce((current, [x]) => current > x ? current : x, 0)]) // input
+      .domain([
+        data.reduce((current, [x]) => Math.min(current, current), 0),
+        data.reduce((current, [x]) => Math.max(current, x), 0)
+      ]) // input
       .range([0, width]) // output
 
   // 6. Y scale will use the randomly generate number
   var yScale = d3.scaleLinear()
-      .domain([0, data.reduce((current, [_, y]) => current > y ? current : y, 0)]) // input
+      .domain([
+        data.reduce((current, [_, y]) => Math.min(current, y), 0),
+        data.reduce((current, [_, y]) => Math.max(current, y), 0)
+      ])
       .range([height, 0]) // output
 
   // 7. d3's line generator

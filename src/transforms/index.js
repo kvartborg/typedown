@@ -6,6 +6,7 @@ import math from './math'
 import style from './style'
 import chart from './chart'
 import csv from './csv'
+import table from './table'
 
 export default {
   include,
@@ -16,4 +17,5 @@ export default {
   style,
   chart,
   csv,
+  table,
 }
