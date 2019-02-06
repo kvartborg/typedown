@@ -1,6 +1,7 @@
 import transform from './transform'
 import transforms from './transforms'
 import vm from 'vm'
+import fetch from 'node-fetch'
 
 export default async function parse (input) {
   const matches = matchAll(input, new RegExp(`{{(.|\n)*?}}`, 'g'))
@@ -18,7 +19,7 @@ export default async function parse (input) {
 
       output = await transform(
         output.replace(/\{\{(.|\n)*?\}\}/,
-        (await vm.runInNewContext(func, { ctx: {}, require, global, console, ...transforms })) || '')
+        (await vm.runInNewContext(func, { ctx: {}, require, global, fetch, console, ...transforms })) || '')
       )
     } catch (err) {
       output = output.replace(

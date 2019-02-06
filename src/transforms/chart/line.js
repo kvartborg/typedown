@@ -16,7 +16,7 @@ export default (data = [], width = 760, height = 400) => {
   // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
       .domain([
-        data.reduce((current, [x]) => Math.min(current, current), 0),
+        data.reduce((current, [x]) => Math.min(current, x), 10000),
         data.reduce((current, [x]) => Math.max(current, x), 0)
       ]) // input
       .range([0, width]) // output
@@ -24,7 +24,7 @@ export default (data = [], width = 760, height = 400) => {
   // 6. Y scale will use the randomly generate number
   var yScale = d3.scaleLinear()
       .domain([
-        data.reduce((current, [_, y]) => Math.min(current, y), 0),
+        data.reduce((current, [_, y]) => Math.min(current, y), 10000),
         data.reduce((current, [_, y]) => Math.max(current, y), 0)
       ])
       .range([height, 0]) // output
