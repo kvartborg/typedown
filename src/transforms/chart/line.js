@@ -62,7 +62,7 @@ export default (data = [], width = 760, height = 400) => {
       .attr('class', 'line') // Assign a class for styling
       .attr('fill', 'none')
       .attr('stroke', 'black')
-      .attr('stroke-width', '3')
+      .attr('stroke-width', '2')
       .attr('d', line) // 11. Calls the line generator
 
   // 12. Appends a circle for each datapoint
@@ -72,7 +72,7 @@ export default (data = [], width = 760, height = 400) => {
       .attr('class', 'dot') // Assign a class for styling
       .attr('cx', function ([x]) { return xScale(x) })
       .attr('cy', function ([_, y]) { return yScale(y) })
-      .attr('r', 3)
+      .attr('r', 2)
 
   return d3n.svgString()
 }
