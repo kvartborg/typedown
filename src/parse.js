@@ -4,6 +4,19 @@ import vm from 'vm'
 import fetch from 'node-fetch'
 
 export default async function parse (input) {
+  return await parseJavaScript(await parseMath(input))
+}
+
+async function parseMath(input) {
+  const match = /\$\$(.|\n)*?\$\$/.exec(input)
+  if (match === null) return input
+  const expression = match[0].replace(/\$\$/g, '').trim()
+  return await parseMath(
+    input.replace(match[0], await transforms.math(expression))
+  )
+}
+
+async function parseJavaScript(input) {
   const matches = matchAll(input, new RegExp(`{{(.|\n)*?}}`, 'g'))
 
   let output = input
@@ -39,10 +52,10 @@ function ensureFlag (flags, flag) {
 function matchAll (str, regex) {
   const localCopy = new RegExp(regex, ensureFlag(regex.flags, 'g'))
 
-  let match
+  let match, n = 0
   const matches = []
 
-  while ((match = localCopy.exec(str))) {
+  while ((match = localCopy.exec(str)) && n < 10) {
     matches.push(match)
   }
 
